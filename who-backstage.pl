@@ -24,13 +24,13 @@ for (my $i = $FILES_TO_KEEP ; $i > 0 ; $i--) {
 #make a new file
 open FH, ">$FILENAME.0";
 #get the macs by pinging the gateway and asking arp
-my @output = `ssh root\@$ROUTER_IP \"ping -I $ROUTER_IFACE -c 1; arp -a\"`;
+my @output = `ssh root\@$ROUTER_IP \"ping -I $ROUTER_IFACE -c 1; arp -a\" 2>/dev/null`;
 
 #filter out the macs and hash them
 for my $line (@output) {
   if ($line =~ m/([0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2})/) {
     #hash
-    my $hash = `/bin/echo -n $1 | /usr/bin/sha256`;
+    my $hash = `/bin/echo -n $1 | /usr/bin/sha256sum`;
     if ($hash =~ m/(\w+)/) {
       print FH "$1\n";
     }
